@@ -1,0 +1,23 @@
+.search-box {
+  padding: 10px;
+  min-width: 200px;
+
+  input[nz-input] {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  nz-range-picker {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .button-box {
+    display: flex;
+    gap: 10px;
+
+    button {
+      width: 100%;
+    }
+  }
+}

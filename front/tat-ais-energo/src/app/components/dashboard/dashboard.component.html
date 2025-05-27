@@ -1,0 +1,233 @@
+<nz-table
+  [nzData]="listOfData"
+  [nzTotal]="total"
+  [nzPageSize]="pageSize"
+  [nzPageIndex]="pageIndex"
+  [nzShowSizeChanger]="true"
+  [nzShowQuickJumper]="true"
+  [nzShowTotal]="totalTemplate"
+  [nzFrontPagination]="false"
+  (nzQueryParams)="onQueryParamsChange($event)"
+  nzBordered
+  [nzSize]="'middle'"
+>
+  <thead>
+    <tr>
+      <!-- ID Column -->
+      <th
+        nzShowSort
+        [nzSortOrder]="getSortOrder('id')"
+        [nzSortDirections]="['ascend', 'descend', null]"
+        [nzColumnKey]="'id'"
+        [nzSortFn]="true"
+        [nzSortPriority]="1"
+        [nzWidth]="listOfColumns[0].width"
+        nzResizable
+        (nzResizeEnd)="listOfColumns[0].width = $event + 'px'"
+        nzBounds="window"
+      >
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span>ID</span>
+          <button
+            nz-button
+            nzType="text"
+            nzSize="small"
+            nz-dropdown
+            [nzDropdownMenu]="idSearchMenu"
+            nzTrigger="click"
+            (click)="$event.stopPropagation()"
+          >
+            <span nz-icon nzType="search"></span>
+          </button>
+        </div>
+        <nz-dropdown-menu #idSearchMenu="nzDropdownMenu">
+          <div class="search-box" nz-menu>
+            <input
+              type="text"
+              nz-input
+              placeholder="Search ID"
+              [(ngModel)]="searchValue['id']"
+              (keyup.enter)="search()"
+            />
+            <div class="button-box">
+              <button nz-button nzType="primary" nzSize="small" (click)="search()">
+                Search
+              </button>
+              <button nz-button nzSize="small" (click)="reset('id')">Reset</button>
+            </div>
+          </div>
+        </nz-dropdown-menu>
+      </th>
+
+      <!-- Text Column -->
+      <th
+        nzShowSort
+        [nzSortOrder]="getSortOrder('text')"
+        [nzSortDirections]="['ascend', 'descend', null]"
+        [nzColumnKey]="'text'"
+        [nzSortFn]="true"
+        [nzSortPriority]="1"
+        [nzWidth]="listOfColumns[1].width"
+        nzResizable
+        nzBounds="window"
+        (nzResizeEnd)="listOfColumns[1].width = $event + 'px'"
+      >
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span>Text</span>
+          <button
+            nz-button
+            nzType="text"
+            nzSize="small"
+            nz-dropdown
+            [nzDropdownMenu]="textSearchMenu"
+            nzTrigger="click"
+            (click)="$event.stopPropagation()"
+          >
+            <span nz-icon nzType="search"></span>
+          </button>
+        </div>
+        <nz-dropdown-menu #textSearchMenu="nzDropdownMenu">
+          <div class="search-box" nz-menu>
+            <input
+              type="text"
+              nz-input
+              placeholder="Search text"
+              [(ngModel)]="searchValue['text']"
+              (keyup.enter)="search()"
+            />
+            <div class="button-box">
+              <button nz-button nzType="primary" nzSize="small" (click)="search()">
+                Search
+              </button>
+              <button nz-button nzSize="small" (click)="reset('text')">Reset</button>
+            </div>
+          </div>
+        </nz-dropdown-menu>
+      </th>
+
+      <!-- Name Column -->
+      <th
+        nzShowSort
+        [nzSortOrder]="getSortOrder('name')"
+        [nzSortDirections]="['ascend', 'descend', null]"
+        [nzColumnKey]="'name'"
+        [nzSortFn]="true"
+        [nzSortPriority]="1"
+        [nzWidth]="listOfColumns[2].width"
+        nzResizable
+        nzBounds="window"
+        (nzResizeEnd)="listOfColumns[2].width = $event + 'px'"
+      >
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span>Name</span>
+          <button
+            nz-button
+            nzType="text"
+            nzSize="small"
+            nz-dropdown
+            [nzDropdownMenu]="nameSearchMenu"
+            nzTrigger="click"
+            (click)="$event.stopPropagation()"
+          >
+            <span nz-icon nzType="search"></span>
+          </button>
+        </div>
+        <nz-dropdown-menu #nameSearchMenu="nzDropdownMenu">
+          <div class="search-box" nz-menu>
+            <input
+              type="text"
+              nz-input
+              placeholder="Search name"
+              [(ngModel)]="searchValue['name']"
+              (keyup.enter)="search()"
+            />
+            <div class="button-box">
+              <button nz-button nzType="primary" nzSize="small" (click)="search()">
+                Search
+              </button>
+              <button nz-button nzSize="small" (click)="reset('name')">Reset</button>
+            </div>
+          </div>
+        </nz-dropdown-menu>
+      </th>
+
+      <!-- Date Column -->
+      <th
+        nzShowSort
+        [nzSortOrder]="getSortOrder('date')"
+        [nzSortDirections]="['ascend', 'descend', null]"
+        [nzColumnKey]="'date'"
+        [nzSortFn]="true"
+        [nzSortPriority]="1"
+        [nzWidth]="listOfColumns[3].width"
+        nzResizable
+        nzBounds="window"
+        (nzResizeEnd)="listOfColumns[3].width = $event + 'px'"
+      >
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span>Date</span>
+          <button
+            nz-button
+            nzType="text"
+            nzSize="small"
+            nz-dropdown
+            [nzDropdownMenu]="dateSearchMenu"
+            nzTrigger="click"
+            (click)="$event.stopPropagation()"
+          >
+            <span nz-icon nzType="search"></span>
+          </button>
+        </div>
+        <nz-dropdown-menu #dateSearchMenu="nzDropdownMenu">
+          <div class="search-box" nz-menu style="padding: 8px; min-width: 250px;">
+            <nz-range-picker
+              [(ngModel)]="dateRange['date']"
+              nzFormat="dd.MM.yyyy"
+            ></nz-range-picker>
+            <div class="button-box">
+              <button nz-button nzType="primary" nzSize="small" (click)="search()">
+                Search
+              </button>
+              <button nz-button nzSize="small" (click)="reset('date')">Reset</button>
+            </div>
+          </div>
+        </nz-dropdown-menu>
+      </th>
+
+      <!-- Event Type Column -->
+      <th
+        [nzShowFilter]="true"
+        [nzFilters]="listOfColumns[4].listOfFilter ?? []"
+        [nzFilterMultiple]="false"
+        [nzColumnKey]="'eventType'"
+        [nzFilterFn]="true"
+        nzShowSort
+        [nzSortOrder]="getSortOrder('eventType')"
+        [nzSortDirections]="['ascend', 'descend', null]"
+        [nzSortFn]="true"
+        [nzSortPriority]="1"
+        [nzWidth]="listOfColumns[4].width"
+        nzResizable
+        nzBounds="window"
+        (nzResizeEnd)="listOfColumns[4].width = $event + 'px'"
+      >
+        Event Type
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (data of listOfData; track data.id) {
+      <tr>
+        <td>{{ data.id }}</td>
+        <td [title]="data.text">{{ data.text }}</td>
+        <td [title]="data.name">{{ data.name }}</td>
+        <td>{{ data.date | date:'dd.MM.yyyy HH:mm' }}</td>
+        <td>{{ eventTypes?.get(data?.eventType) ?? '-' }}</td>
+      </tr>
+    }
+  </tbody>
+</nz-table>
+
+<ng-template #totalTemplate let-total let-range="range">
+  Showing {{ range[0] }}-{{ range[1] }} of {{ total }} items
+</ng-template>
