@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NzTableModule, NzTableQueryParams } from 'ng-zorro-antd/table';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
@@ -9,7 +9,6 @@ import { FormsModule } from '@angular/forms';
 import { HistoryModel } from '../../shared/models/history.model';
 import { EventService } from '../../api/services/event.service';
 import { DatePipe } from '@angular/common';
-import { NzResizableModule } from 'ng-zorro-antd/resizable';
 import { HistoryFilterRequest } from '../../shared/models/filter/history.filter';
 import { ColumnItem } from '../../shared/interfaces/columnItem';
 
@@ -25,12 +24,11 @@ import { ColumnItem } from '../../shared/interfaces/columnItem';
     NzIconModule,
     NzDropDownModule,
     FormsModule,
-    NzResizableModule,
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
   eventTypes: Map<number, string> = new Map<number, string>();
   filter: HistoryFilterRequest = new HistoryFilterRequest();
 
@@ -51,10 +49,63 @@ export class DashboardComponent implements OnInit {
   dateRange: { [key: string]: Date[] } = {};
   sortFields: { field: string; order: string }[] = [];
 
-  constructor(private eventService: EventService) {}
+  isResizing: boolean = false;
+  resizeColumnIndex: number = -1;
+  startX: number = 0;
+  startWidth: number = 0;
+
+  constructor(
+    private eventService: EventService
+  ) {}
 
   ngOnInit(): void {
-    this.loadEventTypes();
+    const t = this;
+    t.loadEventTypes();
+    t.configureListeners();
+  }
+
+  ngOnDestroy(): void {
+    this.configureListeners(false);
+  }
+
+  configureListeners(addListeners: boolean = true): void {
+    const t = this;
+    if (addListeners) {
+      document.addEventListener('mousemove', t.onMouseMove.bind(t));
+      document.addEventListener('mouseup', t.onMouseUp.bind(t));
+    }
+    else {
+      document.removeEventListener('mousemove', t.onMouseMove.bind(t));
+      document.removeEventListener('mouseup', t.onMouseUp.bind(t));
+    }
+  }
+
+  onResizeStart(event: MouseEvent, columnIndex: number): void {
+    const t = this;
+    t.isResizing = true;
+    t.resizeColumnIndex = columnIndex;
+    t.startX = event.clientX;
+    t.startWidth = parseInt(t.listOfColumns[columnIndex].width.replace('px', ''));
+    document.body.style.cursor = 'col-resize';
+    event.preventDefault();
+  }
+
+  onMouseMove(event: MouseEvent): void {
+    const t = this;
+    if (!t.isResizing) return;
+    const deltaX = event.clientX - t.startX;
+    const newWidth = Math.max(60, t.startWidth + deltaX);
+    t.listOfColumns[t.resizeColumnIndex].width = `${newWidth}px`;
+  }
+
+  onMouseUp(): void {
+    const t = this;
+    t.resizeColumnIndex = -1;
+    document.body.style.cursor = '';
+    // Чтобы ресайз не вызывал сортировку
+    setTimeout(() => {
+      t.isResizing = false;
+    }, 100);
   }
 
   loadTableData(): void {
@@ -77,8 +128,8 @@ export class DashboardComponent implements OnInit {
     t.filter.sort = params.sort;
     t.eventService.getHistoryPaged(t.filter).subscribe({
       next: (resp) => {
-        this.listOfData = resp.data.items;
-        this.total = resp.data.total;
+        t.listOfData = resp.data.items;
+        t.total = resp.data.total;
       },
       error: (err) => {
         console.error(err);
@@ -103,7 +154,6 @@ export class DashboardComponent implements OnInit {
 
   search(): void {
     const t = this;
-    t.pageIndex = 1;
     t.loadTableData();
   }
 
@@ -116,6 +166,8 @@ export class DashboardComponent implements OnInit {
 
   onQueryParamsChange(params: NzTableQueryParams): void {
     const t = this;
+    if (t.isResizing) return;
+
     const { pageIndex, pageSize, sort, filter } = params;
 
     t.pageIndex = pageIndex;
@@ -128,7 +180,6 @@ export class DashboardComponent implements OnInit {
     for (const [_, values] of Object.entries(filter)) {
       if (values.key === 'eventType') {
         t.searchValue[values.key] = values.value?.[0] as string;
-        t.pageIndex = 1;
       }
     }
 

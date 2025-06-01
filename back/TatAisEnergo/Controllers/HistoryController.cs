@@ -89,6 +89,11 @@ namespace TatAisEnergo.WebApi.Controllers
             }
 
             var total = await query.CountAsync();
+
+            var totalPages = (int)Math.Ceiling(total / (double)filter.PageSize);
+            if (filter.Page > totalPages && totalPages > 0)
+                filter.Page = totalPages;
+
             var items = await query
                 .Skip((filter.Page - 1) * filter.PageSize)
                 .Take(filter.PageSize)

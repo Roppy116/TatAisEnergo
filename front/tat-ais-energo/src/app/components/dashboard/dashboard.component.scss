@@ -21,3 +21,33 @@
     }
   }
 }
+
+.resizable-table {
+  .resize-handle {
+    position: absolute;
+    top: -12px;
+    right: -24px;
+    width: 3px;
+    height: 48px;
+    background-color: #d9d9d9;
+    cursor: col-resize;
+    opacity: 0.8;
+    transition: all 0.2s ease;
+
+    &:hover {
+      opacity: 1;
+      background-color: #1890FF;
+    }
+
+    &:active {
+      opacity: 1;
+      background-color: #1890FF;
+    }
+  }
+
+  .resizable-column.event-type {
+    .resize-handle{
+      right: -44px !important;
+    }
+  }
+}

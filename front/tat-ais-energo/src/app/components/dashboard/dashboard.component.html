@@ -10,6 +10,7 @@
   (nzQueryParams)="onQueryParamsChange($event)"
   nzBordered
   [nzSize]="'middle'"
+  class="resizable-table"
 >
   <thead>
     <tr>
@@ -21,10 +22,9 @@
         [nzColumnKey]="'id'"
         [nzSortFn]="true"
         [nzSortPriority]="1"
-        [nzWidth]="listOfColumns[0].width"
-        nzResizable
-        (nzResizeEnd)="listOfColumns[0].width = $event + 'px'"
-        nzBounds="window"
+        [style.width]="listOfColumns[0].width"
+        class="resizable-column"
+        [class.resizing]="isResizing"
       >
         <div style="display: flex; justify-content: space-between; align-items: center;">
           <span>ID</span>
@@ -57,6 +57,10 @@
             </div>
           </div>
         </nz-dropdown-menu>
+        <div
+          class="resize-handle"
+          (mousedown)="onResizeStart($event, 0)"
+        ></div>
       </th>
 
       <!-- Text Column -->
@@ -64,13 +68,12 @@
         nzShowSort
         [nzSortOrder]="getSortOrder('text')"
         [nzSortDirections]="['ascend', 'descend', null]"
-        [nzColumnKey]="'text'"
         [nzSortFn]="true"
         [nzSortPriority]="1"
-        [nzWidth]="listOfColumns[1].width"
-        nzResizable
-        nzBounds="window"
-        (nzResizeEnd)="listOfColumns[1].width = $event + 'px'"
+        [nzColumnKey]="'text'"
+        [style.width]="listOfColumns[1].width"
+        class="resizable-column"
+        [class.resizing]="isResizing"
       >
         <div style="display: flex; justify-content: space-between; align-items: center;">
           <span>Text</span>
@@ -103,6 +106,10 @@
             </div>
           </div>
         </nz-dropdown-menu>
+        <div
+          class="resize-handle"
+          (mousedown)="onResizeStart($event, 1)"
+        ></div>
       </th>
 
       <!-- Name Column -->
@@ -113,10 +120,9 @@
         [nzColumnKey]="'name'"
         [nzSortFn]="true"
         [nzSortPriority]="1"
-        [nzWidth]="listOfColumns[2].width"
-        nzResizable
-        nzBounds="window"
-        (nzResizeEnd)="listOfColumns[2].width = $event + 'px'"
+        [style.width]="listOfColumns[2].width"
+        class="resizable-column"
+        [class.resizing]="isResizing"
       >
         <div style="display: flex; justify-content: space-between; align-items: center;">
           <span>Name</span>
@@ -149,6 +155,10 @@
             </div>
           </div>
         </nz-dropdown-menu>
+        <div
+          class="resize-handle"
+          (mousedown)="onResizeStart($event, 2)"
+        ></div>
       </th>
 
       <!-- Date Column -->
@@ -159,10 +169,9 @@
         [nzColumnKey]="'date'"
         [nzSortFn]="true"
         [nzSortPriority]="1"
-        [nzWidth]="listOfColumns[3].width"
-        nzResizable
-        nzBounds="window"
-        (nzResizeEnd)="listOfColumns[3].width = $event + 'px'"
+        [style.width]="listOfColumns[3].width"
+        class="resizable-column"
+        [class.resizing]="isResizing"
       >
         <div style="display: flex; justify-content: space-between; align-items: center;">
           <span>Date</span>
@@ -179,7 +188,7 @@
           </button>
         </div>
         <nz-dropdown-menu #dateSearchMenu="nzDropdownMenu">
-          <div class="search-box" nz-menu style="padding: 8px; min-width: 250px;">
+          <div class="search-box" nz-menu style="min-width: 250px;">
             <nz-range-picker
               [(ngModel)]="dateRange['date']"
               nzFormat="dd.MM.yyyy"
@@ -192,6 +201,10 @@
             </div>
           </div>
         </nz-dropdown-menu>
+        <div
+          class="resize-handle"
+          (mousedown)="onResizeStart($event, 3)"
+        ></div>
       </th>
 
       <!-- Event Type Column -->
@@ -206,12 +219,15 @@
         [nzSortDirections]="['ascend', 'descend', null]"
         [nzSortFn]="true"
         [nzSortPriority]="1"
-        [nzWidth]="listOfColumns[4].width"
-        nzResizable
-        nzBounds="window"
-        (nzResizeEnd)="listOfColumns[4].width = $event + 'px'"
+        [style.width]="listOfColumns[4].width"
+        class="resizable-column event-type"
+        [class.resizing]="isResizing"
       >
         Event Type
+        <div
+          class="resize-handle"
+          (mousedown)="onResizeStart($event, 4)"
+        ></div>
       </th>
     </tr>
   </thead>
